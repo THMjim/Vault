@@ -1,0 +1,58 @@
+# ----------------------------------------------------------------------
+# 1. OBSIDIAN-SPECIFIC FILES (CRITICAL to avoid conflicts)
+# ----------------------------------------------------------------------
+
+# IGNORE ALL CONFIGURATION FOLDER CONTENTS by default
+.obsidian/
+
+# But EXPLICITLY RE-INCLUDE (un-ignore) essential config for syncing setup:
+# (These lines start with '!' to negate the ignore rule above)
+!.obsidian/app.json              # Core settings
+!.obsidian/core-plugins.json     # Core plugin list
+!.obsidian/community-plugins.json# Community plugin list
+!.obsidian/themes/               # Custom themes and snippets
+
+# Always IGNORE device-specific state (to prevent merge conflicts)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/vault.config
+
+# IGNORE files that might contain sensitive data (like API keys)
+.obsidian/plugins/*/data.json
+
+# Windows - was Thumbs.db & Desktop.ini
+**/*.db
+**/*.ini
+
+
+# ----------------------------------------------------------------------
+# 3. PENTEST/DEV TOOL OUTPUT & SCRIPTS
+# ----------------------------------------------------------------------
+
+# General temporary files
+**/*.tmp
+**/*.swp
+**/*.bak
+
+# Raw log files and tool output (can be very large)
+**/*.log
+**/*.txt
+**/*.out
+
+# Compiled executables (if you are compiling C/Go/Rust in your repo)
+**/*.exe
+**/*.bin
+**/*.elf
+
+# NOTE ON IMAGES: Since your screenshots are evidence, do NOT ignore
+# image files like *.png or *.jpg unless you are specifically using
+# Git LFS for large binaries.
+exploit_code/
+# **/images/
+# **/*.png
+# **/*.jpg
+# **/*.jpeg
+
+# Loot/Credentials (Strongly advised to ignore and handle securely,
+# or use encryption like git-crypt if you must commit)
+# /loot/

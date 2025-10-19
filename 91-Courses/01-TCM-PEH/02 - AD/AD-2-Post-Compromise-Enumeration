@@ -1,0 +1,43 @@
+## Post Compromise Enumeration
+### LDAP Domain Dump  
+`mkdir marvel.local && cd marvel.local`  
+`` sudo ldapdomaindump ldaps://192.168.176.128 -u 'MARVEL\fcastle' -p Password1``
+
+### Bloodhounds
+sudo pip install bloodhound  
+sudo neo4j console  
+open link for localhost  
+login neo4j : neo4j  
+sudo bloodhound  
+
+clear database to start fresh  
+
+#### Collect Data By Using Injestor    
+mkdir bloodhound && cd bloodhound  
+bloodhound-python -d Marvel.local -u fcastle -p Password1 -ns 192.168.176.121 -c all  
+Import data collected into bloodhound  
+Upload data -> point to bloodhound folder -> select all ->   
+Analysis  
+*** 
+
+### Plumhound   
+<https://github.com/PlumHound/PlumHound?tab=readme-ov-file#known-issues>  
+
+PIP3 Broken install: Move EXTERNALLY-MANAGED folder to something else, or delete  
+Do this for all versions of python  
+`sudo mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.old`  
+<https://stackoverflow.com/questions/75608323/how-do-i-solve-error-externally-managed-environment-every-time-i-use-pip-3>  
+
+
+- `sudo neo4j console`   OPEN NEO4j   
+- `sudo bloodhound`   - OPEN Bloodhound   
+- `sudo python3 PlumHound.py --easy -p neo4j1`  - OPEN Plumhound   
+- `sudo python3 PlumHound.py -x tasks/default.tasks -p neo4j1`  - default stuff  
+- `cd /opt/PlumHound/reports`  `ls`  
+- `firefox index.html`  
+
+### PingCastle  
+Another tool to analyze health of enterprise  
+Creates report ouput,  gives vulnerabilities and recommendations  
+<https://www.pingcastle.com/>  
+
