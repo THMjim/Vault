@@ -18,11 +18,11 @@ sudo sed -i '$d' /etc/hosts
 ```bash
 echo -e "daniel\njustin" | sudo tee -a /usr/share/wordlists/dirb/others/names.txt
 # \n  : carriage return, daniel is on one line, <\n enter>, justin is on the next line
+# -e  : enables interpretation of backslah escapes..
 ```
 ## Hash
 ```bash
-echo -n "secret" | sha256sum
-# -n strips new  line
+echo -n "secret" | sha256sum # write hash to file , -n strips new line character \n
 ```
 ## TMUX 
 - [ipsec](https://www.youtube.com/watch?v=Lqehvpe_djs)
@@ -55,6 +55,7 @@ Cb + U|D|L|R arrow    # move around  splits in terminal
 
 Cb + Alt + Shift +  P # save to log file with plugin
 
+Cb + . (New Index Number)  # Move current window to new index/position
 ##########################################
 #  ~/.tmux.conf Set prefix to Ctrl-Space instead of Ctrl-b
 unbind C-b
