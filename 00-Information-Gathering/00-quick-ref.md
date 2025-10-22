@@ -27,7 +27,7 @@ sudo nmap -vv --reason -Pn -T4 -sU --top-ports 20 -oN "./scans/nmap_UDP_20.txt" 
 ## WWW
 
 ```bash
-feroxbuster -u http://192.168.IP:80/ -t 100 -x "txt,html,php,asp,aspx,jsp" -k -q -o "./scans/http_feroxbuster_dirbuster.txt"
+feroxbuster -u http://192.168.IP:80/ -t 100 -x "txt,pdf,html,php,asp,aspx,jsp" -k -q -o "./scans/http_feroxbuster_dirbuster.txt"
 curl -sSik http://192.168.IP:80/
 gobuster dir -u http://IP/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/raft-large-directories.txt
 
